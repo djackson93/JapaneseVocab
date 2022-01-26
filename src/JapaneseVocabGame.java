@@ -361,9 +361,11 @@ public class JapaneseVocabGame {
 			e.printStackTrace();
 		}
 	}	
-		
-		
-	private static Score getScore(String userName) {
+	
+	//***********UNFINISHED********************
+	//TO-DO: Move the calculation of all this stuff inside the placeScore method
+	// so that when getting a high score, we can assume to grab the to name and score (should be for the getHighScore method)
+	private static String getScore(String userName) {
 		
 		String fileName = "HighScores.txt";
 		String filePath = "C:\\Users\\Dakota\\Desktop\\" + fileName;
@@ -373,7 +375,7 @@ public class JapaneseVocabGame {
 			
 			//If file does not yet exist, create it
 			if (!(file.exists())) {
-				System.out.println("There are no scores recorded for the game yet!");
+				return "There are no scores recorded for the game yet!";
 			
 			} else {		
 				
@@ -393,23 +395,69 @@ public class JapaneseVocabGame {
 					
 					//This should create a list of Score objects based off what's in the highScores file
 					listedPlayers.add(new Score(playerName, playerScore));
-					listedPlayers.
+					
+					//Need to figure out how to check if any of the "Scores.names" contain the userName being checked for
+					if(listedPlayers.contains("Some Code Here")) {
+						//Then return it
+						String returnScore = "SomeScore.toString"; //Replace this code when you figure it out
+						return returnScore;
+					}
 				}
-			
-				System.out.println("Your score has been succesfully recorded! Thanks for playing!");
 			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		return "The username you are looking for does not exist.";
+		
 	}
 	
-	private static Score getHighScore() {
+	//Returns the 1st element of a list of Scores kept on "highScore.txt" in descending order (via placeScore method)
+	private static String getHighScore() {
 		
 		String fileName = "HighScores.txt";
 		String filePath = "C:\\Users\\Dakota\\Desktop\\" + fileName;
 		File file = new File(filePath);
+		
+		ArrayList<Score> listedPlayers = new ArrayList<Score>();
+		
+		try {
+			
+			//If file does not yet exist, create it
+			if (!(file.exists())) {
+				return "There are no scores recorded for the game yet!";
+			
+			} else {		
+				
+				FileReader fr = new FileReader(file);
+				BufferedReader reader = new BufferedReader(fr);
+				
+				String s;
+				while((s = reader.readLine()) != null) {
+					String[] parts = s.split("-");
+					//This gives the player name by getting everything from start up to the "-" without the space before it
+					String playerName = parts[0].substring(0, parts[0].length()-1);
+					
+					//This should get the score of the player by getting everything after dash minus the spaces and date
+					int playerScore = Integer.valueOf(parts[1].substring(1, parts[1].length()-20));
+					
+					//This should create a list of Score objects based off what's in the highScores file
+					listedPlayers.add(new Score(playerName, playerScore));
+				}
+				
+				//Return the 1st Score element (as toString) as listed should be kept in descending order via the placeScore method
+				Score returnScore = listedPlayers.get(0);
+				return returnScore.toString();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		//This *should* never be hit; if it is, something is wrong
+		return "There has been some error";
+		
 		
 	}
 }
